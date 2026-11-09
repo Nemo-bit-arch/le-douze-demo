@@ -239,7 +239,31 @@ abbr { text-decoration: none; }
 /* =====================================================================
    5 · LA CARTE DU BAR : la rangée de verres et leurs sous-verres
    ===================================================================== */
-.rail { display: flex; align-items: center; gap: clamp(2rem, 4vw, 4.5rem); height: 100%; padding: 0 var(--sc-gutter); }
+/* La rangée se balaie : défilement horizontal natif (doigt, pavé tactile), aimanté sur chaque verre ;
+   la souris la fait glisser (douze.js). Le défilement vertical la traverse sans s'y arrêter. */
+.acte--verres { padding: clamp(4.5rem, 12vh, 8rem) 0 clamp(3.5rem, 9vh, 6rem); }
+.rail {
+  --fondu-g: 0rem; --fondu-d: 6rem;
+  position: relative;
+  display: flex; align-items: center; gap: clamp(2rem, 4vw, 4.5rem);
+  padding: 1rem var(--sc-gutter) 1.5rem;
+  overflow-x: auto; overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--sc-gutter);
+  scrollbar-width: none;
+  cursor: grab;
+  /* Un fondu au bord qui annonce la suite ; il disparaît au bout de la rangée. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--fondu-g), #000 calc(100% - var(--fondu-d)), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 var(--fondu-g), #000 calc(100% - var(--fondu-d)), transparent);
+}
+.rail::-webkit-scrollbar { display: none; }
+.rail > * { scroll-snap-align: start; }
+.rail:not(.au-debut) { --fondu-g: 2.5rem; }
+.rail.au-bout { --fondu-d: 0rem; }
+.rail.tire { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+.rail.tire > * { pointer-events: none; }
+.rail:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--sc-accent); border-radius: var(--sc-r-sm); }
 .rail__tete { flex: none; width: min(30ch, 70vw); }
 .rail__tete .sc-display--lg { margin: 0 0 var(--sc-4); font-style: italic; }
 .rail__tete .sc-body { color: var(--sc-ink-soft); }
@@ -280,6 +304,39 @@ abbr { text-decoration: none; }
 .sous-verre:focus-visible { outline-offset: 6px; border-radius: 50%; }
 .rail__fin { flex: none; width: min(18ch, 70vw); padding-right: var(--sc-gutter); }
 .rail__fin .sc-display--md { font-style: italic; color: var(--sc-accent); }
+
+/* Le repose-pieds du bar : la barre en laiton, ses deux fixations (un verre de plus ou de moins),
+   la bague qui coulisse avec la rangée. */
+.repose-pieds { display: flex; flex-wrap: wrap; align-items: center; gap: .9rem; margin: var(--sc-5) var(--sc-gutter) 0; }
+.repose-pieds__fixation {
+  position: relative; flex: none; display: grid; place-items: center;
+  width: 46px; height: 46px; padding: 0; border: 0; border-radius: 50%;
+  background: var(--laiton-grain);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .55), inset 0 -2px 4px rgb(80 50 10 / .35), 0 6px 14px -6px rgb(0 0 0 / .75);
+  cursor: pointer;
+  transition: translate .15s ease, filter .2s ease;
+}
+.repose-pieds__fixation::before {
+  content: ""; width: 9px; height: 9px;
+  border: solid #4a3210; border-width: 0 2px 2px 0;
+  rotate: -45deg; translate: -2px 0;
+}
+.repose-pieds__fixation--g::before { rotate: 135deg; translate: 2px 0; }
+.repose-pieds__fixation:hover { filter: brightness(1.1); }
+.repose-pieds__fixation:active { translate: 0 1px; }
+.repose-pieds__fixation[aria-disabled="true"] { filter: saturate(.4) brightness(.62); cursor: default; }
+.repose-pieds__barre {
+  position: relative; flex: 0 1 min(22rem, 44vw); height: 10px; border-radius: 5px;
+  background: linear-gradient(180deg, #f6e2a8 0%, #c99a45 48%, #85601f 100%);
+  box-shadow: 0 5px 10px -5px rgb(0 0 0 / .8);
+}
+.repose-pieds__bague {
+  position: absolute; top: 50%; left: calc(var(--avance, 0) * (100% - 22px));
+  width: 22px; height: 18px; translate: 0 -50%; border-radius: 4px;
+  background: linear-gradient(90deg, #6f4b17, #e2bb6f 32%, #fff2c8 50%, #c99a45 70%, #6f4b17);
+  box-shadow: 0 2px 6px rgb(0 0 0 / .55);
+}
+.repose-pieds__aide { flex: 1 0 100%; margin: .15rem 0 0; font-size: var(--sc-t-sm); color: var(--sc-ink-soft); }
 
 /* =====================================================================
    6 · LE VENDREDI
@@ -545,6 +602,7 @@ abbr { text-decoration: none; }
   .plat img { grid-row: span 3; margin: 0; }
   .plat h3 { font-size: 1.3rem; }
 
+  .rail { --fondu-d: 3rem; }
   .verre { width: min(66vw, 260px); }
   .sous-verre { width: 136px; height: 136px; }
 

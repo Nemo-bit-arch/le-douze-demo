@@ -118,6 +118,104 @@
   });
 
   /* ------------------------------------------------------------------
+     La rangée qui se balaie de gauche à droite. Le doigt et le pavé tactile utilisent le
+     défilement natif (aimanté sur chaque élément) ; ce code ajoute le glisser à la souris, les
+     flèches du clavier, et annonce l'avancée (0 à 1) à l'objet qui la montre.
+     ------------------------------------------------------------------ */
+  function rangee(rail, quandAvance) {
+    var elements = Array.prototype.slice.call(rail.children);
+    var doux = reduit ? 'auto' : 'smooth';
+    function max() { return Math.max(0, rail.scrollWidth - rail.clientWidth); }
+    function positions() {
+      var marge = parseFloat(getComputedStyle(rail).scrollPaddingLeft) || 0, m = max();
+      return elements.map(function (el) { return borne(el.offsetLeft - marge, 0, m); });
+    }
+    function poser(x) { rail.scrollTo({ left: x, behavior: doux }); }
+    function vers(el) { poser(borne(el.offsetLeft - (parseFloat(getComputedStyle(rail).scrollPaddingLeft) || 0), 0, max())); }
+    function aller(sens) {
+      var p = positions(), x = rail.scrollLeft, i;
+      if (sens > 0) { for (i = 0; i < p.length; i++) if (p[i] > x + 4) return poser(p[i]); return poser(max()); }
+      for (i = p.length - 1; i >= 0; i--) if (p[i] < x - 4) return poser(p[i]);
+      poser(0);
+    }
+
+    var prevu = false;
+    function suivre() {
+      prevu = false;
+      var m = max(), avance = m > 1 ? borne(rail.scrollLeft / m, 0, 1) : 0;
+      rail.classList.toggle('au-debut', avance < 0.01);
+      rail.classList.toggle('au-bout', avance > 0.99);
+      if (quandAvance) quandAvance(avance);
+    }
+    rail.addEventListener('scroll', function () { if (!prevu) { prevu = true; requestAnimationFrame(suivre); } }, { passive: true });
+    window.addEventListener('resize', suivre);
+
+    // La souris : on attrape la rangée et on la fait glisser ; au relâcher, elle se pose sur
+    // l'élément suivant dans le sens du geste.
+    var prise = null, jeton = 0;
+    rail.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      prise = { x: e.clientX, depart: rail.scrollLeft, bouge: false };
+    });
+    window.addEventListener('pointermove', function (e) {
+      if (!prise) return;
+      var dx = e.clientX - prise.x;
+      if (!prise.bouge && Math.abs(dx) > 6) { prise.bouge = true; jeton++; rail.classList.add('tire'); }
+      if (prise.bouge) rail.scrollLeft = prise.depart - dx;
+    });
+    window.addEventListener('pointerup', function () {
+      if (!prise) return;
+      var geste = prise; prise = null;
+      if (!geste.bouge) return;
+      // Le clic qui suit un glisser ne doit pas retourner le sous-verre resté sous la souris.
+      var bloque = function (ev) { ev.preventDefault(); ev.stopPropagation(); };
+      rail.addEventListener('click', bloque, true);
+      setTimeout(function () { rail.removeEventListener('click', bloque, true); }, 0);
+      var p = positions(), x = rail.scrollLeft, sens = x - geste.depart, cible = p[0], i;
+      if (sens > 30) { cible = max(); for (i = 0; i < p.length; i++) if (p[i] >= x - 2) { cible = p[i]; break; } }
+      else if (sens < -30) { cible = 0; for (i = p.length - 1; i >= 0; i--) if (p[i] <= x + 2) { cible = p[i]; break; } }
+      else p.forEach(function (v) { if (Math.abs(v - x) < Math.abs(cible - x)) cible = v; });
+      // L'aimant reste coupé jusqu'à l'arrivée, sinon il ferait sauter la rangée en cours de route.
+      // Le jeton empêche une fin en retard de rallumer l'aimant pendant le glisser suivant.
+      var mien = jeton;
+      var finir = function () {
+        rail.removeEventListener('scrollend', finir);
+        if (mien === jeton) rail.classList.remove('tire');
+      };
+      rail.addEventListener('scrollend', finir);
+      setTimeout(finir, 700);
+      poser(cible);
+    });
+    rail.addEventListener('dragstart', function (e) { e.preventDefault(); });
+
+    // Le clavier : la rangée a le focus, les flèches avancent d'un élément.
+    rail.addEventListener('keydown', function (e) {
+      if (e.target !== rail) return;
+      var k = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+      if (k) { e.preventDefault(); aller(k); }
+      else if (e.key === 'Home') { e.preventDefault(); poser(0); }
+      else if (e.key === 'End') { e.preventDefault(); poser(max()); }
+    });
+
+    suivre();
+    return { aller: aller, vers: vers };
+  }
+
+  /* Le repose-pieds du bar : la bague suit la rangée, chaque fixation avance d'un verre. */
+  var railVerres = $('[data-rangee]'), repose = $('[data-repose]');
+  if (railVerres && repose) {
+    var fixations = $$('[data-pas]', repose);
+    var verres = rangee(railVerres, function (avance) {
+      repose.style.setProperty('--avance', avance.toFixed(4));
+      fixations[0].setAttribute('aria-disabled', avance < 0.01 ? 'true' : 'false');
+      fixations[1].setAttribute('aria-disabled', avance > 0.99 ? 'true' : 'false');
+    });
+    fixations.forEach(function (b) {
+      b.addEventListener('click', function () { verres.aller(+b.getAttribute('data-pas')); });
+    });
+  }
+
+  /* ------------------------------------------------------------------
      Votre table : l'horloge que l'on tourne (geste signature)
      ------------------------------------------------------------------ */
   var horloge = $('[data-horloge]'), grande = $('[data-grande-aiguille]'), lueChoix = $('[data-heure-choisie]');

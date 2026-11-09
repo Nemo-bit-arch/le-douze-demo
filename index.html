@@ -30,7 +30,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="scrollcraft.css">
-<link rel="stylesheet" href="douze.css?v=1">
+<link rel="stylesheet" href="douze.css?v=2">
 </head>
 <body>
 <a class="evitement" href="#table">Aller au contenu</a>
@@ -217,11 +217,13 @@
   </section>
 
   <!-- ================================================================
-       5 · LA CARTE DU BAR (22 h 30) : pan. Six sous-verres à retourner.
+       5 · LA CARTE DU BAR (22 h 30) : une rangée que l'on balaie de gauche à droite (doigt, pavé
+       tactile, souris, flèches du clavier) ; le défilement vertical traverse la section.
+       Six sous-verres à retourner ; le repose-pieds en laiton fait avancer d'un verre.
        ================================================================ -->
-  <section class="acte acte--verres" id="verres" data-sc-act="pan" data-sc-span="4.2" data-heure="22.5" aria-labelledby="titre-verres">
-    <div data-sc-stage>
-      <div class="rail" data-sc-pan="0.04">
+  <section class="acte acte--verres" id="verres" data-heure="22.5" aria-labelledby="titre-verres">
+    <div>
+      <div class="rail" id="rangee-verres" tabindex="0" role="group" aria-roledescription="rangée" aria-label="Les six verres de la carte du bar" data-rangee>
         <div class="rail__tete">
           <h2 id="titre-verres" class="sc-display sc-display--lg">La carte du bar</h2>
           <p class="sc-body">Six verres pour la nuit. Retournez un sous-verre&#8239;: la recette est écrite au dos.</p>
@@ -273,6 +275,14 @@
         <div class="rail__fin">
           <p class="sc-display sc-display--md">Le bar sert jusqu'à minuit.</p>
         </div>
+      </div>
+
+      <!-- Le repose-pieds du bar : deux fixations en laiton avancent d'un verre, la bague suit la rangée. -->
+      <div class="repose-pieds" data-repose>
+        <button class="repose-pieds__fixation repose-pieds__fixation--g" type="button" data-pas="-1" aria-controls="rangee-verres" aria-label="Verre précédent"></button>
+        <span class="repose-pieds__barre" aria-hidden="true"><span class="repose-pieds__bague"></span></span>
+        <button class="repose-pieds__fixation repose-pieds__fixation--d" type="button" data-pas="1" aria-controls="rangee-verres" aria-label="Verre suivant"></button>
+        <p class="repose-pieds__aide">Faites glisser la rangée de verres.</p>
       </div>
     </div>
   </section>
@@ -397,6 +407,6 @@
 
 <script src="scrollcraft.js"></script>
 <script>ScrollCraft.mount(document.body);</script>
-<script src="douze.js?v=1"></script>
+<script src="douze.js?v=2"></script>
 </body>
 </html>
