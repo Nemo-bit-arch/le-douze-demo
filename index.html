@@ -1,0 +1,402 @@
+<!doctype html>
+<!--
+  Le Douze · restaurant et lounge sur un toit de Libreville. Site de démonstration, établissement fictif.
+  Moteur : scroll-craft (scrollcraft.js / scrollcraft.css, jamais modifiés).
+  Grammaire : « Un tour d'horloge » (voir BRIEF.md). Textes à valider : textes.md.
+-->
+<html lang="fr" data-type="place">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Le Douze · Restaurant et lounge sur un toit de Libreville</title>
+<meta name="description" content="Restaurant et lounge au troisième étage et sur le toit, face à l'océan, à Libreville. Déjeuner, coucher du soleil, dîner, cocktails et karaoké le vendredi, tous les jours de midi à minuit.">
+<meta name="page-type" content="place">
+<meta name="site-kind" content="other">
+<meta name="page-kind" content="place">
+<meta name="theme-color" content="#f3eee4">
+<meta property="og:title" content="Le Douze · Douze heures sur un toit, face à l'océan">
+<meta property="og:description" content="Le déjeuner au soleil, le coucher du soleil sur l'Atlantique, puis la nuit au bar. Tous les jours, de midi à minuit.">
+<meta property="og:image" content="https://nemo-bit-arch.github.io/le-douze-demo/assets/share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://nemo-bit-arch.github.io/le-douze-demo/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<!-- Démonstration envoyée par lien : pas d'indexation par les moteurs de recherche. -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='15' fill='%23b8873e'/><circle cx='16' cy='16' r='12' fill='%23f3eee4'/><path d='M16 6v10l5 3' stroke='%23161a24' stroke-width='2.2' fill='none' stroke-linecap='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="scrollcraft.css">
+<link rel="stylesheet" href="douze.css?v=1">
+</head>
+<body>
+<a class="evitement" href="#table">Aller au contenu</a>
+<span data-sc-progress></span>
+
+<!-- ================================================================
+     LA MONTRE : navigation. Son aiguille fait un tour de midi à minuit.
+     ================================================================ -->
+<nav class="montre" aria-label="Les heures du Douze">
+  <button class="montre__boitier" type="button" aria-expanded="false" aria-controls="montre-heures">
+    <svg class="montre__cadran" viewBox="0 0 100 100" aria-hidden="true">
+      <circle class="montre__lunette" cx="50" cy="50" r="48"/>
+      <circle class="montre__fond" cx="50" cy="50" r="42"/>
+      <g class="montre__index">
+        <path d="M50 11v7"/><path d="M89 50h-7"/><path d="M50 89v-7"/><path d="M11 50h7"/>
+        <path d="M69.5 16.2l-2 3.5"/><path d="M83.8 30.5l-3.5 2"/><path d="M83.8 69.5l-3.5-2"/><path d="M69.5 83.8l-2-3.5"/>
+        <path d="M30.5 83.8l2-3.5"/><path d="M16.2 69.5l3.5-2"/><path d="M16.2 30.5l3.5 2"/><path d="M30.5 16.2l2 3.5"/>
+      </g>
+      <text class="montre__marque" x="50" y="35">LE DOUZE</text>
+      <line class="montre__aiguille" data-aiguille x1="50" y1="54" x2="50" y2="20"/>
+      <circle class="montre__axe" cx="50" cy="50" r="3"/>
+    </svg>
+    <span class="montre__lecture"><span class="montre__libelle">Les heures</span><span class="montre__heure" data-heure-lue>12 h 30</span></span>
+  </button>
+  <ol class="montre__heures" id="montre-heures" hidden>
+    <li><a href="#top" data-vers="12.5"><span>12 h 30</span>Le déjeuner</a></li>
+    <li><a href="#coucher" data-vers="17.75"><span>18 h 10</span>Le coucher du soleil</a></li>
+    <li><a href="#table" data-vers="20"><span>20 h</span>La table</a></li>
+    <li><a href="#bar" data-vers="22"><span>22 h</span>Le bar</a></li>
+    <li><a href="#vendredi" data-vers="23"><span>23 h</span>Le vendredi</a></li>
+    <li><a href="#reserver" data-vers="23.5"><span>Minuit</span>Votre table</a></li>
+  </ol>
+</nav>
+
+<main id="top">
+
+  <!-- ================================================================
+       1 · LE DÉJEUNER (12 h 30) : pin. L'heure avance sous la main.
+       ================================================================ -->
+  <section class="acte acte--dejeuner" data-sc-act="pin" data-sc-span="1.5" data-heure="12.5" aria-labelledby="titre-douze">
+    <div data-sc-stage class="dejeuner">
+      <picture>
+        <source media="(max-width: 760px)" srcset="assets/midi-m.webp">
+        <img class="dejeuner__photo" src="assets/midi.webp" alt="Le toit-terrasse du Douze à l'heure du déjeuner : tables nappées de blanc sous des parasols écrus, bougainvillées, et l'océan derrière une balustrade de verre." width="1920" height="1440">
+      </picture>
+      <div class="dejeuner__voile" aria-hidden="true"></div>
+
+      <div class="dejeuner__copie">
+        <p class="surtitre">Le Douze · restaurant et lounge · Libreville</p>
+        <p class="heure-geante" aria-hidden="true"><span data-geante-h>12</span><span class="heure-geante__h">h</span><span data-geante-m>30</span></p>
+        <h1 id="titre-douze" class="dejeuner__titre">Douze heures sur un toit, face à l'océan.</h1>
+        <p class="dejeuner__phrase">Le déjeuner au soleil, le coucher du soleil sur l'Atlantique, puis la nuit au bar. Le Douze vous reçoit chaque jour de midi à minuit, au troisième étage et sur le toit.</p>
+        <a class="ascenseur" href="#reserver">
+          <span class="ascenseur__plaque" aria-hidden="true">
+            <span class="ascenseur__vis"></span><span class="ascenseur__vis"></span>
+            <span class="ascenseur__bouton"><svg viewBox="0 0 24 24"><path d="M12 6l6 8H6z"/></svg></span>
+            <span class="ascenseur__etage">Toit</span>
+          </span>
+          <span class="ascenseur__txt">Réserver une table</span>
+        </a>
+      </div>
+
+      <p class="dejeuner__suite" data-sc-cue="0.55 1 0.15 0">Puis le soleil descend vers l'océan.</p>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       2 · LE COUCHER (18 h 10) : scrub, le pic. Le soleil se couche sous la main.
+       ================================================================ -->
+  <section class="acte acte--coucher" id="coucher" data-sc-act="scrub" data-sc-span="3.4" data-sc-dwell="0.2" data-heure="17.75" aria-labelledby="titre-coucher">
+    <div data-sc-stage>
+      <picture>
+        <source media="(max-width: 760px)" srcset="assets/coucher-poster-m.webp">
+        <img class="sc-stage__poster" src="assets/coucher-poster.webp" alt="Le toit-terrasse à l'heure dorée, le soleil bas au-dessus de l'océan, les fauteuils encore vides.">
+      </picture>
+      <video data-sc-scrub data-sc-src="assets/coucher.mp4" data-sc-src-mobile="assets/coucher-m.mp4" muted playsinline preload="none"></video>
+      <div class="sc-scrim sc-scrim--lead" aria-hidden="true"></div>
+
+      <div class="sc-copy sc-copy--lead coucher__copie">
+        <div data-sc-cue="0.02 0.36 0.08 0.12">
+          <p class="surtitre surtitre--clair">18 h 10</p>
+          <h2 id="titre-coucher" class="sc-display sc-display--lg">Le soleil se couche droit devant vous.</h2>
+        </div>
+      </div>
+      <div class="sc-copy sc-copy--lead coucher__copie">
+        <p class="sc-lede" data-sc-cue="0.36 0.68 0.08 0.1">Si près de l'équateur, il se couche presque à la même heure toute l'année, un peu après 18&nbsp;heures. La terrasse regarde l'ouest&#8239;: rien ne s'interpose entre votre table et l'horizon.</p>
+      </div>
+      <div class="sc-copy sc-copy--lead coucher__copie">
+        <p class="sc-display sc-display--md coucher__fin" data-sc-cue="0.7 1 0.1 0.04">Puis les lampes s'allument, table après table.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       3 · LA TABLE (20 h) : flow. La carte du soir.
+       ================================================================ -->
+  <section class="acte acte--table" id="table" data-heure="20" aria-labelledby="titre-table">
+    <div class="table">
+      <header class="table__tete" data-sc-in data-sc-stagger="70">
+        <p class="surtitre">20 h · La table</p>
+        <h2 id="titre-table" class="sc-display sc-display--xl">Le dîner</h2>
+        <p class="sc-lede">Une cuisine qui passe de l'Italie à la France et au Gabon&#8239;: pizzas au feu de bois, poisson du jour, pâtes de la mer, et quelques bouchées à partager pour commencer.</p>
+      </header>
+
+      <ul class="plats" data-sc-in data-sc-stagger="60">
+        <li class="plat">
+          <img src="assets/table/pizza.webp" alt="Une pizza au feu de bois, croûte tachetée, mozzarella fraîche et basilic." width="900" height="900" loading="lazy" decoding="async">
+          <h3>Pizza au feu de bois</h3>
+          <p>Pâte levée quarante-huit heures, tomate, mozzarella fraîche, basilic.</p>
+          <p class="plat__prix">9&nbsp;000 <abbr title="francs CFA">FCFA</abbr></p>
+        </li>
+        <li class="plat">
+          <img src="assets/table/crevettes.webp" alt="Des crevettes croustillantes nappées d'une sauce crémeuse relevée, oignon nouveau et sésame." width="900" height="900" loading="lazy" decoding="async">
+          <h3>Crevettes croustillantes</h3>
+          <p>Frites en tempura, nappées d'une sauce crémeuse et relevée, oignon nouveau, sésame.</p>
+          <p class="plat__prix">8&nbsp;500 <abbr title="francs CFA">FCFA</abbr></p>
+        </li>
+        <li class="plat">
+          <img src="assets/table/capitaine.webp" alt="Un filet de capitaine grillé, beurre citronné aux câpres, tomates cerises et haricots verts." width="900" height="900" loading="lazy" decoding="async">
+          <h3>Filet de capitaine</h3>
+          <p>Grillé à la plancha, beurre citronné aux câpres, haricots verts.</p>
+          <p class="plat__prix">14&nbsp;000 <abbr title="francs CFA">FCFA</abbr></p>
+        </li>
+        <li class="plat">
+          <img src="assets/table/fettuccine.webp" alt="Des fettuccine aux crevettes, moules et calamars, ail et persil." width="900" height="900" loading="lazy" decoding="async">
+          <h3>Fettuccine de la mer</h3>
+          <p>Crevettes, moules et calamars, ail, vin blanc et persil.</p>
+          <p class="plat__prix">12&nbsp;500 <abbr title="francs CFA">FCFA</abbr></p>
+        </li>
+        <li class="plat">
+          <img src="assets/table/burger.webp" alt="Un burger au cheddar et aux oignons confits, avec des frites coupées à la main." width="900" height="900" loading="lazy" decoding="async">
+          <h3>Le burger du Douze</h3>
+          <p>Bœuf, cheddar affiné, oignons confits, frites coupées à la main.</p>
+          <p class="plat__prix">11&nbsp;000 <abbr title="francs CFA">FCFA</abbr></p>
+        </li>
+        <li class="plat">
+          <img src="assets/table/cesar.webp" alt="Une salade César, copeaux de parmesan, croûtons et poulet grillé." width="900" height="900" loading="lazy" decoding="async">
+          <h3>Salade César</h3>
+          <p>Cœurs de romaine, copeaux de parmesan, croûtons, poulet grillé.</p>
+          <p class="plat__prix">8&nbsp;000 <abbr title="francs CFA">FCFA</abbr></p>
+        </li>
+        <li class="plat">
+          <img src="assets/table/planche.webp" alt="Une planche à partager : chips de banane plantain, brochettes de bœuf, nems et trois sauces." width="900" height="900" loading="lazy" decoding="async">
+          <h3>La planche à partager</h3>
+          <p>Chips de banane plantain, brochettes de bœuf, nems, trois sauces.</p>
+          <p class="plat__prix">10&nbsp;000 <abbr title="francs CFA">FCFA</abbr></p>
+        </li>
+        <li class="plat">
+          <img src="assets/table/fondant.webp" alt="Un fondant au chocolat au cœur coulant, et une quenelle de glace à la vanille." width="900" height="900" loading="lazy" decoding="async">
+          <h3>Fondant au chocolat</h3>
+          <p>Cœur coulant, glace à la vanille.</p>
+          <p class="plat__prix">5&nbsp;000 <abbr title="francs CFA">FCFA</abbr></p>
+        </li>
+      </ul>
+      <p class="table__note">Cuisine ouverte jusqu'à 23&nbsp;h. Chaque plat se commande aussi à emporter ou en livraison.</p>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       4 · LE BAR (22 h) : scrub. Le verre se remplit au défilement.
+       ================================================================ -->
+  <section class="acte acte--bar" id="bar" data-sc-act="scrub" data-sc-span="2.4" data-sc-dwell="0.18" data-heure="22" aria-labelledby="titre-bar">
+    <div data-sc-stage>
+      <picture>
+        <source media="(max-width: 760px)" srcset="assets/bar-poster-m.webp">
+        <img class="sc-stage__poster" src="assets/bar-poster.webp" alt="Un verre de cristal taillé posé sur un bar de granit noir, un cube de glace limpide, les lumières de la ville derrière la vitre.">
+      </picture>
+      <video data-sc-scrub data-sc-src="assets/bar.mp4" data-sc-src-mobile="assets/bar-m.mp4" muted playsinline preload="none"></video>
+      <div class="sc-scrim sc-scrim--lead" aria-hidden="true"></div>
+
+      <div class="sc-copy sc-copy--lead bar__copie">
+        <div data-sc-cue="0.02 0.38 0.08 0.12">
+          <p class="surtitre surtitre--clair">22 h · Le bar</p>
+          <h2 id="titre-bar" class="sc-display sc-display--lg">Le verre se remplit à votre rythme.</h2>
+        </div>
+      </div>
+      <div class="sc-copy sc-copy--lead bar__copie">
+        <p class="sc-lede" data-sc-cue="0.38 0.7 0.08 0.1">Le bissap infuse à froid depuis le matin. Il est versé sur un cube de glace taillé à la main, puis relevé d'un zeste d'orange.</p>
+      </div>
+      <div class="sc-copy sc-copy--lead bar__copie">
+        <p class="sc-display sc-display--md bar__fin" data-sc-cue="0.72 1 0.1 0.04">Le vôtre est servi.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       5 · LA CARTE DU BAR (22 h 30) : pan. Six sous-verres à retourner.
+       ================================================================ -->
+  <section class="acte acte--verres" id="verres" data-sc-act="pan" data-sc-span="4.2" data-heure="22.5" aria-labelledby="titre-verres">
+    <div data-sc-stage>
+      <div class="rail" data-sc-pan="0.04">
+        <div class="rail__tete">
+          <h2 id="titre-verres" class="sc-display sc-display--lg">La carte du bar</h2>
+          <p class="sc-body">Six verres pour la nuit. Retournez un sous-verre&#8239;: la recette est écrite au dos.</p>
+        </div>
+
+        <article class="verre">
+          <img src="assets/bar/bissap.webp" alt="Un verre haut de spritz au bissap, rouge rubis, avec un zeste de citron vert et de la menthe." width="900" height="1200" loading="lazy">
+          <button class="sous-verre" type="button" aria-pressed="false" aria-label="Retourner le sous-verre : Bissap Spritz">
+            <span class="sous-verre__face"><span class="sous-verre__nom">Bissap Spritz</span><span class="sous-verre__prix">7&nbsp;000 FCFA</span></span>
+            <span class="sous-verre__dos">Fleurs d'hibiscus infusées à froid, vin pétillant, citron vert et menthe. Servi long, sur glace.</span>
+          </button>
+        </article>
+        <article class="verre">
+          <img src="assets/bar/douze.webp" alt="Une coupe givrée d'un cocktail doré au gin et au gingembre, une fine tranche de gingembre à la surface." width="900" height="1200" loading="lazy">
+          <button class="sous-verre" type="button" aria-pressed="false" aria-label="Retourner le sous-verre : Le Douze">
+            <span class="sous-verre__face"><span class="sous-verre__nom">Le Douze</span><span class="sous-verre__prix">8&nbsp;000 FCFA</span></span>
+            <span class="sous-verre__dos">Gin, gingembre frais pressé, citron vert, miel de forêt. Servi dans une coupe glacée.</span>
+          </button>
+        </article>
+        <article class="verre">
+          <img src="assets/bar/ananas.webp" alt="Un verre bas d'un cocktail doré à l'ananas et au rhum, sur un cube de glace, un quartier d'ananas grillé et un petit piment rouge." width="900" height="1200" loading="lazy">
+          <button class="sous-verre" type="button" aria-pressed="false" aria-label="Retourner le sous-verre : Ananas braisé">
+            <span class="sous-verre__face"><span class="sous-verre__nom">Ananas braisé</span><span class="sous-verre__prix">8&nbsp;000 FCFA</span></span>
+            <span class="sous-verre__dos">Rhum ambré, ananas grillé, une pointe de piment doux. Servi sur un cube de glace.</span>
+          </button>
+        </article>
+        <article class="verre">
+          <img src="assets/bar/maracuja.webp" alt="Un petit verre à pied d'un cocktail orange vif au fruit de la passion, sous une mousse blanche." width="900" height="1200" loading="lazy">
+          <button class="sous-verre" type="button" aria-pressed="false" aria-label="Retourner le sous-verre : Maracuja">
+            <span class="sous-verre__face"><span class="sous-verre__nom">Maracuja</span><span class="sous-verre__prix">7&nbsp;500 FCFA</span></span>
+            <span class="sous-verre__dos">Vodka, fruit de la passion, vanille, une mousse légère. Servi court, dans un verre à pied.</span>
+          </button>
+        </article>
+        <article class="verre">
+          <img src="assets/bar/minuit.webp" alt="Un verre à cocktail d'un café au rhum, couronné d'une mousse crème et de trois grains de café." width="900" height="1200" loading="lazy">
+          <button class="sous-verre" type="button" aria-pressed="false" aria-label="Retourner le sous-verre : Café de minuit">
+            <span class="sous-verre__face"><span class="sous-verre__nom">Café de minuit</span><span class="sous-verre__prix">7&nbsp;500 FCFA</span></span>
+            <span class="sous-verre__dos">Rhum, espresso serré, sucre de canne. Servi glacé, couronné de mousse.</span>
+          </button>
+        </article>
+        <article class="verre">
+          <img src="assets/bar/citronnelle.webp" alt="Un verre haut d'une boisson sans alcool au gingembre et à la citronnelle, sur glace pilée." width="900" height="1200" loading="lazy">
+          <button class="sous-verre" type="button" aria-pressed="false" aria-label="Retourner le sous-verre : Citronnelle, sans alcool">
+            <span class="sous-verre__face"><span class="sous-verre__nom">Citronnelle</span><span class="sous-verre__prix">sans alcool · 4&nbsp;500 FCFA</span></span>
+            <span class="sous-verre__dos">Gingembre, citronnelle, citron vert, eau pétillante. Servi sur glace pilée.</span>
+          </button>
+        </article>
+
+        <div class="rail__fin">
+          <p class="sc-display sc-display--md">Le bar sert jusqu'à minuit.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       6 · LE VENDREDI (23 h) : reveal. Le projecteur s'ouvre sur la scène.
+       ================================================================ -->
+  <section class="acte acte--vendredi" id="vendredi" data-sc-act="flow" data-heure="23" aria-labelledby="titre-vendredi">
+    <div class="vendredi">
+      <figure class="vendredi__scene" data-sc-reveal="iris" data-sc-reveal-at="0.08 0.5">
+        <img src="assets/micro.webp" alt="Un micro argenté sur son pied, dans le halo d'un projecteur, devant un rideau de velours ; le salon dans la pénombre et les lumières de la ville." width="1600" height="1200" loading="lazy">
+      </figure>
+      <div class="vendredi__txt" data-sc-in data-sc-stagger="70">
+        <p class="surtitre">Le vendredi, dès 22 h</p>
+        <h2 id="titre-vendredi" class="sc-display sc-display--xl">Le micro est à vous.</h2>
+        <p class="sc-lede">Chaque vendredi soir, le salon du troisième étage devient une scène. Inscrivez votre chanson au bar&#8239;; la salle reprend le refrain avec vous.</p>
+        <a class="fiche" href="#reserver" data-vendredi>
+          <span class="fiche__papier" aria-hidden="true">
+            <span class="fiche__ligne"><b>Chanson</b><i></i></span>
+            <span class="fiche__ligne"><b>Table</b><i></i></span>
+            <span class="fiche__crayon"></span>
+          </span>
+          <span class="fiche__txt">Réserver un vendredi soir</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       7 · VOTRE TABLE (minuit) : flow + geste signature. L'aiguille change de mains.
+       ================================================================ -->
+  <section class="acte acte--reserver" id="reserver" data-heure="23.5" aria-labelledby="titre-reserver">
+    <div class="reserver">
+      <div class="reserver__fonds" aria-hidden="true">
+        <img data-fond="midi" src="assets/fond-midi.webp" alt="" loading="lazy">
+        <img data-fond="or" src="assets/fond-or.webp" alt="" loading="lazy">
+        <img data-fond="nuit" src="assets/fond-nuit.webp" alt="" loading="lazy">
+      </div>
+      <div class="reserver__voile" aria-hidden="true"></div>
+
+      <div class="reserver__inner">
+        <header class="reserver__tete">
+          <p class="surtitre">Votre table</p>
+          <h2 id="titre-reserver" class="sc-display sc-display--xl">Choisissez votre heure.</h2>
+          <p class="sc-lede">Tournez l'aiguille&#8239;: la terrasse prend la lumière de l'heure choisie. Indiquez ensuite le jour, le nombre de convives et votre nom.</p>
+        </header>
+
+        <div class="horloge-bloc">
+          <div class="horloge" role="slider" tabindex="0" aria-label="Heure de votre table" aria-valuemin="12" aria-valuemax="23" aria-valuenow="20.5" aria-valuetext="20 h 30" data-horloge>
+            <svg viewBox="0 0 200 200" aria-hidden="true">
+              <circle class="horloge__lunette" cx="100" cy="100" r="97"/>
+              <circle class="horloge__fond" cx="100" cy="100" r="86"/>
+              <g class="horloge__chiffres">
+                <text x="100" y="36">XII</text><text x="168" y="106">III</text><text x="100" y="176">VI</text><text x="32" y="106">IX</text>
+              </g>
+              <g class="horloge__minutes" data-minutes></g>
+              <text class="horloge__marque" x="100" y="66">LE DOUZE</text>
+              <text class="horloge__sous" x="100" y="78">LIBREVILLE</text>
+              <g class="horloge__aiguille" data-grande-aiguille>
+                <path d="M100 112 L96.5 100 L100 34 L103.5 100 Z"/>
+                <circle cx="100" cy="34" r="6" class="horloge__prise"/>
+              </g>
+              <circle class="horloge__axe" cx="100" cy="100" r="6"/>
+            </svg>
+          </div>
+          <p class="horloge__lecture"><span data-heure-choisie>20 h 30</span><span class="horloge__aide">Faites tourner l'aiguille, ou utilisez les flèches du clavier.</span></p>
+        </div>
+
+        <form class="carton" data-carton novalidate>
+          <fieldset class="carton__groupe">
+            <legend>Le jour</legend>
+            <div class="ephemeride" data-jours></div>
+          </fieldset>
+
+          <fieldset class="carton__groupe">
+            <legend>Les convives <span class="carton__valeur" data-convives-lus>2 convives</span></legend>
+            <div class="coupes" data-coupes></div>
+          </fieldset>
+
+          <fieldset class="carton__groupe">
+            <legend>La table</legend>
+            <div class="numeros">
+              <label class="numero"><input type="radio" name="zone" value="sur le toit-terrasse" checked><span class="numero__plaque"><span class="numero__n">T</span><span class="numero__txt">Sur le toit</span></span></label>
+              <label class="numero"><input type="radio" name="zone" value="dans le salon du troisième étage"><span class="numero__plaque"><span class="numero__n">S</span><span class="numero__txt">Dans le salon</span></span></label>
+            </div>
+          </fieldset>
+
+          <label class="carton__nom">
+            <span>Au nom de</span>
+            <input type="text" name="nom" autocomplete="name" maxlength="60" placeholder="Votre nom" data-nom>
+          </label>
+
+          <button class="allumette" type="submit">
+            <span class="allumette__pochette" aria-hidden="true"><span class="allumette__frottoir"></span></span>
+            <span class="allumette__baton" aria-hidden="true"><span class="allumette__tete"></span><span class="allumette__flamme"></span></span>
+            <span class="allumette__txt">Envoyer la demande</span>
+          </button>
+          <p class="carton__aide">Votre demande s'ouvre dans WhatsApp, prête à être envoyée. La table vous est confirmée par retour de message.</p>
+          <p class="carton__note" data-note role="status"></p>
+        </form>
+
+        <dl class="infos">
+          <div><dt>Adresse</dt><dd>Quartier Louis, Libreville<br>Troisième étage et toit-terrasse</dd></div>
+          <div><dt>Horaires</dt><dd>Tous les jours, de 12&nbsp;h à minuit<br>Cuisine jusqu'à 23&nbsp;h</dd></div>
+          <div><dt>Le vendredi</dt><dd>Karaoké à partir de 22&nbsp;h</dd></div>
+          <div><dt>Chez vous</dt><dd>À emporter ou en livraison</dd></div>
+        </dl>
+        <a class="rose" href="https://www.google.com/maps/search/?api=1&amp;query=Quartier+Louis+Libreville" target="_blank" rel="noopener">
+          <svg class="rose__dessin" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21"/><path d="M24 5l4 19-4 19-4-19z"/><path d="M5 24l19-4 19 4-19 4z"/><path class="rose__nord" d="M24 5l4 19h-8z"/></svg>
+          <span class="rose__txt">Tracer l'itinéraire</span>
+        </a>
+      </div>
+
+      <footer class="pied">
+        <p><strong>Le Douze</strong>, restaurant et lounge · Libreville</p>
+        <p>Établissement fictif, imaginé pour une démonstration. Photographies et films générés pour l'illustration.</p>
+      </footer>
+    </div>
+  </section>
+
+</main>
+
+<script src="scrollcraft.js"></script>
+<script>ScrollCraft.mount(document.body);</script>
+<script src="douze.js?v=1"></script>
+</body>
+</html>
