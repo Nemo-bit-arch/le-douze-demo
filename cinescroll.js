@@ -301,6 +301,9 @@
     const d = v.dataset;
     this.scene = scenes.find(s => s.el.contains(v)) || null;
     this.src = (isMobile() && d.csSrcMobile) ? d.csSrcMobile : d.csSrc;
+    // Version nette chargée APRÈS la légère (data-cs-src-hd / data-cs-src-mobile-hd) : le vol
+    // bouge dès que la légère est là, puis la nette la remplace sans saut (même cadrage exigé).
+    this.hd = (isMobile() ? d.csSrcMobileHd : d.csSrcHd) || null;
     const r = (d.csRange || '0,1').split(',').map(Number);
     this.r0 = r[0]; this.r1 = r[1] ?? 1;
     // Rampe de vitesse : "p:t, p:t, …" (progression → temps, 0..1), linéaire par morceaux.
@@ -338,9 +341,41 @@
       if (this.painted) return;
       this.painted = true; v.classList.add('cs-painted');
       if (this.poster) this.poster.classList.add('cs-hidden');
+      this.upgrade();
     };
     if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(done); else done();
     if (v.readyState >= 2) setTimeout(done, 120);
+  };
+  // Double tampon : la vidéo nette se charge dans un clone invisible posé sur la légère, se cale
+  // sur la cible du moment, puis prend sa place. Aucune image vide entre les deux.
+  Scrub.prototype.upgrade = function () {
+    if (!this.hd || this.upgrading || reduced()) return;
+    this.upgrading = true;
+    fetch(this.hd).then(r => r.ok ? r.blob() : Promise.reject(new Error(r.status)))
+      .then(b => {
+        const old = this.el, nv = old.cloneNode(false);
+        nv.removeAttribute('src'); nv.preload = 'auto'; nv.muted = true; nv.playsInline = true;
+        nv.style.opacity = '0';
+        // Recherche forcée (jamais 0 pile), sinon aucun « seeked » ne vient si la cible est 0.
+        nv.addEventListener('loadedmetadata', () => { nv.currentTime = Math.max(0.001, this.time()); }, { once: true });
+        nv.addEventListener('seeked', () => {
+          if (this.el !== nv) {                       // première image calée : on échange
+            // Pas de requestVideoFrameCallback ici : une vidéo à opacité 0 n'est pas présentée,
+            // le rappel ne viendrait jamais. Image décodée au « seeked » ; court délai de sûreté.
+            setTimeout(() => {
+              if (this.el === nv) return;
+              nv.style.opacity = ''; this.el = nv; old.remove(); URL.revokeObjectURL(old.src);
+              this.pending = null; this.seek(); wake();
+            }, 60);
+            return;
+          }
+          if (this.pending != null) { const t = this.pending; this.pending = null; this.apply(t); }
+          wake();
+        });
+        nv.src = URL.createObjectURL(b);
+        old.after(nv);
+      })
+      .catch(err => { this.el.dataset.csHdError = String(err && err.message || err); });
   };
   Scrub.prototype.ramp = function (p) {
     const c = this.curve;
@@ -589,7 +624,7 @@
     };
   }
 
-  window.CineScroll = { mount, route, state, wake, quadMatrix, version: '2.1.0' };
+  window.CineScroll = { mount, route, state, wake, quadMatrix, version: '2.2.0' };
   if (!document.documentElement.hasAttribute('data-cs-manual')) {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => mount());
     else mount();

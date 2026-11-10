@@ -31,6 +31,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="scrollcraft.css">
 <link rel="stylesheet" href="douze.css?v=2">
+<link rel="stylesheet" href="cinescroll.css?v=3">
+<link rel="stylesheet" href="vol.css?v=3">
 </head>
 <body>
 <a class="evitement" href="#table">Aller au contenu</a>
@@ -68,17 +70,38 @@
 <main id="top">
 
   <!-- ================================================================
-       1 · LE DÉJEUNER (12 h 30) : pin. L'heure avance sous la main.
+       1 · LE VOL, PUIS LE DÉJEUNER (12 h 30). Moteur cine-scroll1 (cinescroll.js), à côté de
+       scroll-craft : de la mer au toit, puis au comptoir du salon-bar, en un plan piloté par le
+       défilement (vidéo générée, vol simulé, 26 s). Temps du film : mer 0-0,26 · tables
+       0,26-0,42 · couple 0,42-0,56 · pergola 0,56-0,705 · seuil 0,705-0,85 · bar 0,85-1.
+       Le texte du déjeuner se pose sur la dernière image ; l'heure reste à 12 h 30 jusqu'au
+       repère, puis avance sous la main comme avant.
        ================================================================ -->
-  <section class="acte acte--dejeuner" data-sc-act="pin" data-sc-span="1.5" data-heure="12.5" aria-labelledby="titre-douze">
-    <div data-sc-stage class="dejeuner">
-      <picture>
-        <source media="(max-width: 760px)" srcset="assets/midi-m.webp">
-        <img class="dejeuner__photo" src="assets/midi.webp" alt="Le toit-terrasse du Douze à l'heure du déjeuner : tables nappées de blanc sous des parasols écrus, bougainvillées, et l'océan derrière une balustrade de verre." width="1920" height="1440">
-      </picture>
-      <div class="dejeuner__voile" aria-hidden="true"></div>
+  <section class="vol" id="vol" data-cs-scene data-cs-length="720" data-cs-damp="7" data-heure="12.5" aria-labelledby="titre-douze">
+    <span class="vol__repere" data-heure="12.5" aria-hidden="true"></span>
+    <div class="vol__scene" data-cs-stage>
+      <img class="vol__affiche" data-cs-poster src="assets/vol/vol-debut.webp" data-cs-poster-end="assets/vol/vol-fin.webp"
+           alt="Vue aérienne depuis l'océan : la plage, le boulevard bordé de cocotiers et l'immeuble du Douze, son toit-terrasse couvert de parasols écrus.">
+      <video class="vol__film" data-cs-video
+             data-cs-src="assets/vol/vol-m-paysage.mp4" data-cs-src-hd="assets/vol/vol.mp4"
+             data-cs-src-mobile="assets/vol/vol-m-leger.mp4" data-cs-src-mobile-hd="assets/vol/vol-m.mp4"
+             data-cs-curve="0:0, 0.22:0.26, 0.36:0.42, 0.45:0.47, 0.53:0.56, 0.66:0.705, 0.78:0.85, 0.9:0.995, 1:1"
+             muted playsinline preload="none" aria-hidden="true"></video>
+      <div class="vol__voile" aria-hidden="true"></div>
 
-      <div class="dejeuner__copie">
+      <div class="vol__ouverture" data-cs-cue="0,0.08">
+        <p class="surtitre">Le Douze · restaurant et lounge · Libreville</p>
+        <p class="ouverture__phrase">Depuis la mer, on le reconnaît à ses parasols.</p>
+        <p class="altimetre" aria-hidden="true"><span class="altimetre__aiguille"></span></p>
+        <p class="ouverture__geste">Faites défiler la page pour rejoindre le toit.</p>
+      </div>
+
+      <p class="vol__legende vol__legende--droite" data-cs-cue="0.07,0.23">Trois étages au-dessus du boulevard, l'Atlantique pour seul voisin.</p>
+      <p class="vol__legende" data-cs-cue="0.22,0.38">Le déjeuner se prend au soleil, sous les parasols de toile.</p>
+      <p class="vol__legende vol__legende--droite" data-cs-cue="0.38,0.54">En contrebas, la plage ; au-delà, l'Atlantique jusqu'à l'horizon.</p>
+      <p class="vol__legende" data-cs-cue="0.6,0.77">Sous la pergola, le salon-bar ouvre ses baies sur la mer.</p>
+
+      <div class="dejeuner__copie vol__heros" data-cs-cue="0.86,1">
         <p class="surtitre">Le Douze · restaurant et lounge · Libreville</p>
         <p class="heure-geante" aria-hidden="true"><span data-geante-h>12</span><span class="heure-geante__h">h</span><span data-geante-m>30</span></p>
         <h1 id="titre-douze" class="dejeuner__titre">Douze heures sur un toit, face à l'océan.</h1>
@@ -93,7 +116,7 @@
         </a>
       </div>
 
-      <p class="dejeuner__suite" data-sc-cue="0.55 1 0.15 0">Puis le soleil descend vers l'océan.</p>
+      <p class="dejeuner__suite vol__suite" data-cs-cue="0.93,1">Puis le soleil descend vers l'océan.</p>
     </div>
   </section>
 
@@ -407,6 +430,18 @@
 
 <script src="scrollcraft.js"></script>
 <script>ScrollCraft.mount(document.body);</script>
+<script>
+  // Le vol au téléphone tenu droit : une bande recadrée en hauteur (pleine définition), au lieu
+  // d'un 16:9 agrandi six fois. Tenu à l'horizontale, le 16:9 léger. Même règle que le moteur.
+  (function () {
+    var mobile = matchMedia('(hover: none) and (pointer: coarse)').matches || matchMedia('(max-width: 760px)').matches;
+    if (!mobile) return;
+    var v = document.querySelector('.vol__film');
+    if (matchMedia('(orientation: portrait)').matches) document.documentElement.classList.add('vol-portrait');
+    else { v.dataset.csSrcMobile = 'assets/vol/vol-m-paysage.mp4'; delete v.dataset.csSrcMobileHd; }
+  })();
+</script>
+<script src="cinescroll.js?v=3"></script>
 <script src="douze.js?v=2"></script>
 </body>
 </html>

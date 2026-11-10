@@ -1,0 +1,94 @@
+/* =====================================================================
+   1 · LE VOL (moteur cine-scroll1), puis le texte du déjeuner sur la dernière image.
+   Le texte du déjeuner garde ses styles de douze.css (.dejeuner__copie, .heure-geante,
+   .ascenseur, .dejeuner__suite) ; ce fichier ne pose que le vol.
+   ===================================================================== */
+.vol {
+  --papier: #fbf7ef;
+  --creme: 243 238 228;
+  /* --fin : de 0 à 1 pendant l'arrivée au comptoir (voile crème pour le texte du déjeuner) ;
+     avant, un pied sombre porte les légendes claires. */
+  --fin: clamp(0, calc((var(--cs-p, 0) - .84) * 7), 1);
+}
+/* Repère de l'heure : jusqu'ici le récit reste à 12 h 30, ensuite l'heure avance (douze.js).
+   82 % de la hauteur = progression 0,95 du vol : le texte du déjeuner, entièrement paru à 0,92,
+   se lit d'abord à 12 h 30, puis l'heure avance sous la main. */
+.vol__repere { position: absolute; left: 0; top: 82%; width: 1px; height: 0; pointer-events: none; }
+
+.vol__scene { background: #cfd6d6; }
+.vol__affiche, .vol__film { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 58% 50%; }
+.vol__voile {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(100deg, rgb(var(--creme) / calc(var(--fin) * .92)) 0%, rgb(var(--creme) / calc(var(--fin) * .74)) 30%, rgb(var(--creme) / calc(var(--fin) * .2)) 52%, rgb(var(--creme) / 0) 64%),
+    /* le coin de « Puis le soleil descend vers l'océan » */
+    radial-gradient(ellipse 46% 50% at 100% 100%, rgb(var(--creme) / calc(var(--fin) * .95)) 0%, rgb(var(--creme) / calc(var(--fin) * .85)) 50%, rgb(var(--creme) / 0) 100%),
+    linear-gradient(0deg, rgb(10 14 20 / calc((1 - var(--fin)) * .55)) 0%, rgb(10 14 20 / calc((1 - var(--fin)) * .22)) 30%, rgb(10 14 20 / 0) 52%),
+    linear-gradient(180deg, rgb(10 14 20 / calc((1 - var(--fin)) * .3)) 0%, rgb(10 14 20 / 0) 22%);
+}
+
+/* L'ouverture, au-dessus de l'océan */
+.vol__ouverture {
+  position: absolute; left: var(--sc-gutter); bottom: clamp(6rem, 14vh, 8rem);
+  max-width: 30rem; color: var(--papier);
+}
+.vol__ouverture .surtitre { color: #f2d49a; text-shadow: 0 1px 10px rgb(0 0 0 / .45); }
+.ouverture__phrase {
+  margin: 0 0 1.4rem;
+  font: italic 400 clamp(1.8rem, 1.2rem + 2.6vw, 3.4rem)/1.05 var(--sc-font-display);
+  text-shadow: 0 2px 18px rgb(0 0 0 / .4); text-wrap: balance;
+}
+.ouverture__geste { margin: .7rem 0 0; font-size: .8rem; letter-spacing: .08em; text-shadow: 0 1px 8px rgb(0 0 0 / .5); }
+
+/* L'altimètre : un cadran de laiton dont l'aiguille tourne pendant le vol */
+.altimetre {
+  position: relative; width: 52px; height: 52px; margin: 0; border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #faf3e2 0 58%, transparent 59%), var(--laiton-grain);
+  box-shadow: 0 6px 16px -6px rgb(0 0 0 / .55), inset 0 1px 0 rgb(255 255 255 / .5);
+}
+.altimetre::before {
+  content: ""; position: absolute; inset: 9px; border-radius: 50%;
+  background: repeating-conic-gradient(from -90deg, #5a3f15 0 1.5deg, transparent 1.5deg 30deg);
+  mask: radial-gradient(circle, transparent 0 62%, #000 63%);
+}
+.altimetre__aiguille {
+  position: absolute; left: 50%; top: 50%; width: 2px; height: 17px; margin-left: -1px;
+  background: #9b4422; border-radius: 2px; transform-origin: 50% 100%;
+  translate: 0 -100%; rotate: calc(-120deg + var(--cs-p, 0) * 1200deg);
+}
+
+/* Les légendes du vol (au-dessus de la montre, en bas à gauche) */
+.vol__legende {
+  position: absolute; left: var(--sc-gutter); bottom: clamp(7rem, 16vh, 9rem); margin: 0;
+  max-width: 19ch; color: var(--papier);
+  font: italic 400 clamp(1.5rem, 1rem + 2vw, 2.6rem)/1.08 var(--sc-font-display);
+  text-shadow: 0 2px 16px rgb(0 0 0 / .45); text-wrap: balance;
+}
+.vol__legende--droite { left: auto; right: var(--sc-gutter); bottom: clamp(2.5rem, 8vh, 5rem); text-align: right; }
+
+/* Le texte du déjeuner sur la dernière image : encre fixe du jour (l'heure avance déjà). */
+.vol__heros, .vol__suite { color: #1d1b17; }
+.vol__heros .heure-geante { color: #1d1b17; }
+
+/* Version portrait (recadrée dans la source autour de 65 % de la largeur), déjà centrée. */
+.vol-portrait .vol__film { object-position: 50% 50%; }
+
+@media (max-width: 860px) {
+  .vol__affiche, .vol__film { object-position: 70% 50%; }
+  .vol-portrait .vol__film { object-position: 50% 50%; }
+  .vol__voile {
+    background:
+      linear-gradient(180deg, rgb(var(--creme) / calc(var(--fin) * .94)) 0%, rgb(var(--creme) / calc(var(--fin) * .86)) 42%, rgb(var(--creme) / calc(var(--fin) * .35)) 62%, rgb(var(--creme) / 0) 76%),
+      radial-gradient(ellipse 70% 30% at 100% 100%, rgb(var(--creme) / calc(var(--fin) * .9)) 0%, rgb(var(--creme) / 0) 100%),
+      linear-gradient(0deg, rgb(10 14 20 / calc((1 - var(--fin)) * .6)) 0%, rgb(10 14 20 / calc((1 - var(--fin)) * .25)) 34%, rgb(10 14 20 / 0) 56%),
+      linear-gradient(180deg, rgb(10 14 20 / calc((1 - var(--fin)) * .3)) 0%, rgb(10 14 20 / 0) 22%);
+  }
+  .vol__ouverture { bottom: 6.5rem; right: var(--sc-gutter); }
+  .vol__legende, .vol__legende--droite { left: var(--sc-gutter); right: var(--sc-gutter); bottom: 6.5rem; text-align: left; max-width: none; }
+}
+
+/* Mouvement réduit : pas de vol, l'image de la dernière pose et le texte du déjeuner d'emblée. */
+.cs-reduced .vol { --fin: 1; height: 100svh !important; }
+.cs-reduced .vol__repere { top: 0; }
+.cs-reduced .vol__ouverture, .cs-reduced .vol__legende { display: none; }
+.cs-reduced .vol__heros, .cs-reduced .vol__suite { opacity: 1 !important; visibility: visible !important; transform: none !important; }
