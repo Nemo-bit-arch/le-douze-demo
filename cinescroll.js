@@ -304,6 +304,9 @@
     // Version nette chargée APRÈS la légère (data-cs-src-hd / data-cs-src-mobile-hd) : le vol
     // bouge dès que la légère est là, puis la nette la remplace sans saut (même cadrage exigé).
     this.hd = (isMobile() ? d.csSrcMobileHd : d.csSrcHd) || null;
+    // Au-delà de cette progression, la nette pas encore arrivée est abandonnée : elle ne doit
+    // jamais retarder les médias des sections suivantes (data-cs-hd-until, défaut 1).
+    this.hdUntil = parseFloat(d.csHdUntil || '1');
     const r = (d.csRange || '0,1').split(',').map(Number);
     this.r0 = r[0]; this.r1 = r[1] ?? 1;
     // Rampe de vitesse : "p:t, p:t, …" (progression → temps, 0..1), linéaire par morceaux.
@@ -348,11 +351,18 @@
   };
   // Double tampon : la vidéo nette se charge dans un clone invisible posé sur la légère, se cale
   // sur la cible du moment, puis prend sa place. Aucune image vide entre les deux.
+  // La nette est un luxe : priorité basse (les médias des autres sections passent devant), et
+  // abandon si le visiteur quitte la scène avant son arrivée ; reprise s'il y revient.
   Scrub.prototype.upgrade = function () {
-    if (!this.hd || this.upgrading || reduced()) return;
+    if (!this.hd || this.upgrading || this.upgraded || reduced()) return;
+    if (this.scene && (!this.scene.near || this.scene.p > this.hdUntil)) return;
     this.upgrading = true;
-    fetch(this.hd).then(r => r.ok ? r.blob() : Promise.reject(new Error(r.status)))
+    const ctl = window.AbortController ? new AbortController() : null;
+    this.hdAbort = ctl;
+    fetch(this.hd, { priority: 'low', signal: ctl ? ctl.signal : undefined })
+      .then(r => r.ok ? r.blob() : Promise.reject(new Error(r.status)))
       .then(b => {
+        this.upgraded = true; this.hdAbort = null;
         const old = this.el, nv = old.cloneNode(false);
         nv.removeAttribute('src'); nv.preload = 'auto'; nv.muted = true; nv.playsInline = true;
         nv.style.opacity = '0';
@@ -375,8 +385,14 @@
         nv.src = URL.createObjectURL(b);
         old.after(nv);
       })
-      .catch(err => { this.el.dataset.csHdError = String(err && err.message || err); });
+      .catch(err => {
+        this.upgrading = false; this.hdAbort = null;
+        if (err && err.name === 'AbortError') return;      // visiteur parti : on reprendra
+        this.upgraded = true;                                 // vraie erreur : on garde la légère
+        this.el.dataset.csHdError = String(err && err.message || err);
+      });
   };
+  Scrub.prototype.leave = function () { if (this.hdAbort) this.hdAbort.abort(); };
   Scrub.prototype.ramp = function (p) {
     const c = this.curve;
     if (!c.length) return p;
@@ -559,7 +575,13 @@
     let busy = false;
     for (const s of scenes) { if (!s.near) continue; s.read(); if (s.step(dt)) busy = true; }
     for (const o of orbits) if (!o.scene || o.scene.near) { if (o.step(dt) || o.dragging) busy = true; }
-    for (const v of videos) if (v.scene && v.scene.near) v.seek();
+    for (const v of videos) if (v.scene && v.scene.near) {
+      v.seek();
+      if (v.hd && !v.upgraded) {
+        if (v.hdAbort && v.scene.p > v.hdUntil) v.leave();
+        else if (!v.upgrading && v.painted && v.scene.p <= v.hdUntil) v.upgrade();
+      }
+    }
     for (const c of cues) if (c.scene && c.scene.near) c.step();
     for (const a of anchors) if (a.scene && a.scene.near) { a.step(); if (a.video && a.video.seeking) busy = true; }
     if (busy) raf = requestAnimationFrame(tick);
@@ -591,7 +613,9 @@
         if (s) s.near = e.isIntersecting;
         if (e.isIntersecting) {
           orbits.filter(o => o.scene === s || (!o.scene && e.target.contains(o.el))).forEach(o => o.load());
-          videos.filter(v => v.scene === s).forEach(v => v.load());
+          videos.filter(v => v.scene === s).forEach(v => { v.load(); if (v.painted) v.upgrade(); });
+        } else {
+          videos.filter(v => v.scene === s).forEach(v => v.leave());
         }
       });
       wake();

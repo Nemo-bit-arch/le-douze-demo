@@ -4,6 +4,10 @@
    .ascenseur, .dejeuner__suite) ; ce fichier ne pose que le vol.
    ===================================================================== */
 .vol {
+  /* Hauteur posée dès le CSS (= data-cs-length, que cinescroll.js pose aussi) : scroll-craft
+     mesure la place des actes suivants avant le montage du vol ; sans elle, toutes ses
+     positions tombaient 620 vh trop haut (coucher et bar joués pendant le vol). */
+  height: 720svh;
   --papier: #fbf7ef;
   --creme: 243 238 228;
   /* --fin : de 0 à 1 pendant l'arrivée au comptoir (voile crème pour le texte du déjeuner) ;
@@ -89,6 +93,7 @@
 
 /* Mouvement réduit : pas de vol, l'image de la dernière pose et le texte du déjeuner d'emblée. */
 .cs-reduced .vol { --fin: 1; height: 100svh !important; }
+@media (prefers-reduced-motion: reduce) { .vol { height: 100svh; } }
 .cs-reduced .vol__repere { top: 0; }
 .cs-reduced .vol__ouverture, .cs-reduced .vol__legende { display: none; }
 .cs-reduced .vol__heros, .cs-reduced .vol__suite { opacity: 1 !important; visibility: visible !important; transform: none !important; }

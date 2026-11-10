@@ -32,7 +32,7 @@
 <link rel="stylesheet" href="scrollcraft.css">
 <link rel="stylesheet" href="douze.css?v=2">
 <link rel="stylesheet" href="cinescroll.css?v=3">
-<link rel="stylesheet" href="vol.css?v=3">
+<link rel="stylesheet" href="vol.css?v=4">
 </head>
 <body>
 <a class="evitement" href="#table">Aller au contenu</a>
@@ -85,6 +85,7 @@
       <video class="vol__film" data-cs-video
              data-cs-src="assets/vol/vol-m-paysage.mp4" data-cs-src-hd="assets/vol/vol.mp4"
              data-cs-src-mobile="assets/vol/vol-m-leger.mp4" data-cs-src-mobile-hd="assets/vol/vol-m.mp4"
+             data-cs-hd-until="0.6"
              data-cs-curve="0:0, 0.22:0.26, 0.36:0.42, 0.45:0.47, 0.53:0.56, 0.66:0.705, 0.78:0.85, 0.9:0.995, 1:1"
              muted playsinline preload="none" aria-hidden="true"></video>
       <div class="vol__voile" aria-hidden="true"></div>
@@ -441,7 +442,23 @@
     else { v.dataset.csSrcMobile = 'assets/vol/vol-m-paysage.mp4'; delete v.dataset.csSrcMobileHd; }
   })();
 </script>
-<script src="cinescroll.js?v=3"></script>
+<script src="cinescroll.js?v=4"></script>
+<script>
+  // Deux moteurs sur la page : quand le vol change de hauteur (montage de cinescroll, mouvement
+  // réduit, barre d'adresse), scroll-craft remesure la place des actes qui le suivent.
+  // Son propre « resize » ignore les changements de hauteur seule au téléphone.
+  (function () {
+    var vol = document.getElementById('vol');
+    if (!vol || !window.ResizeObserver) return;
+    var h = 0;
+    new ResizeObserver(function () {
+      var nh = vol.offsetHeight;
+      if (Math.abs(nh - h) < 1) return;
+      h = nh;
+      (ScrollCraft.instances || []).forEach(function (i) { if (i && i.layout) i.layout(); });
+    }).observe(vol);
+  })();
+</script>
 <script src="douze.js?v=2"></script>
 </body>
 </html>
