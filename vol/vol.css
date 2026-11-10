@@ -1,0 +1,144 @@
+:root {
+  --toile: #f3eee4;
+  --encre: #1d1b17;
+  --encre-douce: #4d473f;
+  --terre: #9b4422;
+  --papier: #fbf7ef;
+  --laiton-grain: linear-gradient(135deg, #e3c27f 0%, #b8873e 38%, #e9cf95 58%, #a2742f 80%, #d4b06a 100%);
+  --f-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --f-texte: "Jost", "Futura", system-ui, sans-serif;
+  --gouttiere: clamp(1rem, 4vw, 3.5rem);
+  color-scheme: light;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--toile); }
+body { margin: 0; background: var(--toile); color: var(--encre); font: 400 1.05rem/1.55 var(--f-texte); -webkit-font-smoothing: antialiased; }
+img { display: block; max-width: 100%; height: auto; }
+
+.bandeau {
+  position: fixed; inset: 0 0 auto 0; z-index: 10;
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 1.1rem var(--gouttiere);
+  pointer-events: none;
+}
+/* --pose (0..1, posé par la page) : l'en-tête passe du blanc sur le vol à l'encre sur le voile crème. */
+.bandeau { --ton: color-mix(in srgb, var(--encre) calc(var(--pose, 0) * 100%), var(--papier)); }
+.marque { margin: 0; font: italic 400 1.5rem/1 var(--f-display); color: var(--ton); text-shadow: 0 1px 12px rgb(0 0 0 / calc(.35 * (1 - var(--pose, 0)))); }
+.bandeau__lieu { margin: 0; font-size: .72rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--ton); text-shadow: 0 1px 10px rgb(0 0 0 / calc(.4 * (1 - var(--pose, 0)))); }
+.cs-reduced { --pose: 1; }
+
+/* ---------- la scène du vol ---------- */
+.vol__scene { position: sticky; top: 0; height: 100svh; overflow: hidden; background: #cfd6d6; }
+.vol__affiche, .vol__film { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 58% 50%; }
+.vol__voile {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgb(243 238 228 / calc(var(--fin, 0) * .9)) 0%, rgb(243 238 228 / calc(var(--fin, 0) * .55)) 38%, rgb(243 238 228 / 0) 62%),
+    linear-gradient(0deg, rgb(10 14 20 / calc((1 - var(--fin, 0)) * .55)) 0%, rgb(10 14 20 / calc((1 - var(--fin, 0)) * .22)) 30%, rgb(10 14 20 / 0) 52%),
+    linear-gradient(180deg, rgb(10 14 20 / .32) 0%, rgb(10 14 20 / 0) 22%);
+}
+/* --fin : de 0 à 1 pendant l'arc final (voile crème pour le titre) ; avant, un pied sombre porte les légendes claires. */
+.vol { --fin: clamp(0, calc((var(--cs-p, 0) - .84) * 7), 1); }
+
+.surtitre { margin: 0 0 1rem; font-size: .74rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--terre); }
+
+/* ouverture, au-dessus de l'océan */
+.vol__ouverture {
+  position: absolute; left: var(--gouttiere); bottom: clamp(2rem, 9vh, 5rem);
+  max-width: 30rem; color: var(--papier);
+}
+.vol__ouverture .surtitre { color: #f2d49a; text-shadow: 0 1px 10px rgb(0 0 0 / .45); }
+.ouverture__phrase { margin: 0 0 1.4rem; font: italic 400 clamp(1.8rem, 1.2rem + 2.6vw, 3.4rem)/1.05 var(--f-display); text-shadow: 0 2px 18px rgb(0 0 0 / .4); text-wrap: balance; }
+.ouverture__geste { margin: .7rem 0 0; font-size: .8rem; letter-spacing: .08em; text-shadow: 0 1px 8px rgb(0 0 0 / .5); }
+
+/* l'altimètre : un cadran de laiton dont l'aiguille monte avec le vol */
+.altimetre {
+  position: relative; width: 52px; height: 52px; margin: 0; border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #faf3e2 0 58%, transparent 59%), var(--laiton-grain);
+  box-shadow: 0 6px 16px -6px rgb(0 0 0 / .55), inset 0 1px 0 rgb(255 255 255 / .5);
+}
+.altimetre::before {
+  content: ""; position: absolute; inset: 9px; border-radius: 50%;
+  background: repeating-conic-gradient(from -90deg, #5a3f15 0 1.5deg, transparent 1.5deg 30deg);
+  mask: radial-gradient(circle, transparent 0 62%, #000 63%);
+}
+.altimetre__aiguille {
+  position: absolute; left: 50%; top: 50%; width: 2px; height: 17px; margin-left: -1px;
+  background: var(--terre); border-radius: 2px; transform-origin: 50% 100%;
+  translate: 0 -100%; rotate: calc(-120deg + var(--cs-p, 0) * 1200deg);
+}
+
+.vol__legende {
+  position: absolute; left: var(--gouttiere); bottom: clamp(2rem, 10vh, 6rem); margin: 0;
+  max-width: 19ch; color: var(--papier);
+  font: italic 400 clamp(1.5rem, 1rem + 2vw, 2.6rem)/1.08 var(--f-display);
+  text-shadow: 0 2px 16px rgb(0 0 0 / .45); text-wrap: balance;
+}
+.vol__legende--droite { left: auto; right: var(--gouttiere); text-align: right; }
+
+/* la pose : le héros du Douze */
+.vol__heros {
+  position: absolute; left: var(--gouttiere); top: 50%; translate: 0 -50%;
+  width: min(36rem, 46vw);
+}
+.heure-geante {
+  margin: 0 0 .2em; font-family: var(--f-display); font-variation-settings: "opsz" 30;
+  font-size: min(clamp(4.5rem, 11vw, 10rem), 20svh); line-height: .9; letter-spacing: -.02em;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.heure-geante__h { font-style: italic; font-size: .42em; margin: 0 .12em; color: var(--terre); vertical-align: .55em; }
+.heros__titre { margin: 0 0 1rem; font: italic 400 min(clamp(1.9rem, 1.2rem + 2.4vw, 3.4rem), 7svh)/1.05 var(--f-display); max-width: 16ch; text-wrap: balance; }
+.heros__phrase { margin: 0 0 2rem; max-width: 38ch; color: var(--encre-douce); text-wrap: pretty; }
+
+/* l'ascenseur, contrôle-objet repris de la page du Douze */
+.ascenseur { display: inline-flex; align-items: center; gap: 1rem; color: var(--encre); text-decoration: none; min-height: 56px; }
+.ascenseur__plaque {
+  position: relative; display: grid; place-items: center; align-content: center; gap: .3rem;
+  width: 62px; height: 92px; flex: none; background: var(--laiton-grain); border-radius: 9px;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .55), inset 0 -2px 4px rgb(80 50 10 / .35), 0 6px 16px -6px rgb(60 40 10 / .55);
+}
+.ascenseur__vis { position: absolute; left: 50%; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #f3dfae, #7e5a24); }
+.ascenseur__vis:first-child { top: 7px; }
+.ascenseur__vis:nth-child(2) { bottom: 7px; }
+.ascenseur__bouton {
+  display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #3a3a3c, #121214);
+  box-shadow: 0 0 0 3px #8a6428, 0 0 0 4px rgb(255 240 200 / .5), inset 0 2px 3px rgb(0 0 0 / .6);
+  transition: background .25s ease, box-shadow .25s ease;
+}
+.ascenseur__bouton svg { width: 16px; height: 16px; fill: #d9c6a0; transition: fill .25s ease; }
+.ascenseur__etage { font-size: .58rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: #5a3f15; }
+.ascenseur__txt { font-size: .86rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding-bottom: .25rem; background: linear-gradient(currentColor, currentColor) 0 100% / 2.2rem 1px no-repeat; transition: background-size .35s ease; }
+.ascenseur:hover .ascenseur__bouton, .ascenseur:focus-visible .ascenseur__bouton {
+  background: radial-gradient(circle at 40% 35%, #fff1c9, #ffbe55 60%, #e08a1e);
+  box-shadow: 0 0 0 3px #8a6428, 0 0 14px 4px rgb(255 190 85 / .65), inset 0 1px 2px rgb(120 60 0 / .4);
+}
+.ascenseur:hover .ascenseur__bouton svg, .ascenseur:focus-visible .ascenseur__bouton svg { fill: #3b2205; }
+.ascenseur:hover .ascenseur__txt, .ascenseur:focus-visible .ascenseur__txt { background-size: 100% 1px; }
+.ascenseur:focus-visible { outline: 2px solid var(--terre); outline-offset: 6px; }
+
+.suite { min-height: 70vh; padding: 6rem var(--gouttiere); max-width: 48rem; }
+.suite__texte { font: italic 400 1.6rem/1.3 var(--f-display); }
+
+/* ---------- téléphone ---------- */
+@media (max-width: 760px) {
+  .vol__affiche, .vol__film { object-position: 70% 50%; }
+  .vol__voile {
+    background:
+      linear-gradient(0deg, rgb(243 238 228 / calc(var(--fin, 0) * .94)) 0%, rgb(243 238 228 / calc(var(--fin, 0) * .8)) 48%, rgb(243 238 228 / 0) 70%),
+      linear-gradient(180deg, rgb(10 14 20 / .32) 0%, rgb(10 14 20 / 0) 22%);
+  }
+  .vol__heros { top: auto; bottom: 1.2rem; translate: none; width: auto; right: var(--gouttiere); }
+  .heure-geante { font-size: min(clamp(3.4rem, 17vw, 5.4rem), 10svh); }
+  .heros__titre { font-size: clamp(1.6rem, 7vw, 2.2rem); }
+  .heros__phrase { display: none; }
+  .vol__legende, .vol__legende--droite { left: var(--gouttiere); right: var(--gouttiere); text-align: left; max-width: none; }
+  .bandeau__lieu { display: none; }
+}
+/* Version portrait (recadrée dans la source autour de 65 % de la largeur) : déjà centrée sur le
+   sujet, elle se cale au milieu. L'affiche 16:9 à 70 % montre la même bande sur un téléphone. */
+.vol-portrait .vol__film { object-position: 50% 50%; }
+/* Mouvement réduit : pas de vol, l'image du héros et son texte d'emblée, sans 460 vh vides. */
+.cs-reduced .vol { --fin: 1; height: 100svh !important; }
+.cs-reduced .vol__ouverture, .cs-reduced .vol__legende { display: none; }
+.cs-reduced .vol__heros { opacity: 1 !important; visibility: visible !important; transform: none !important; }

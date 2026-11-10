@@ -1,0 +1,28 @@
+/* cine-scroll1 engine styles. Thème par variables ; ne pas modifier par projet. */
+[data-cs-scene] { position: relative; }
+[data-cs-stage] {
+  position: sticky; top: 0; height: 100svh; overflow: hidden;
+  display: grid; place-items: center;
+}
+[data-cs-stage] > canvas[data-cs-orbit],
+[data-cs-stage] > video[data-cs-video],
+[data-cs-stage] > [data-cs-poster],
+[data-cs-stage] > [data-cs-gl] {
+  grid-area: 1 / 1; width: 100%; height: 100%; display: block;
+}
+video[data-cs-video], [data-cs-poster] { object-fit: var(--cs-fit, cover); }
+canvas[data-cs-orbit] { cursor: grab; outline: none; }
+canvas[data-cs-orbit].cs-grabbing { cursor: grabbing; }
+canvas[data-cs-orbit]:focus-visible { outline: 2px solid var(--cs-focus, currentColor); outline-offset: -6px; }
+/* L'affiche reste sous le média jusqu'à la première vraie image peinte. */
+[data-cs-poster] { transition: opacity .25s linear; }
+[data-cs-poster].cs-hidden { opacity: 0; visibility: hidden; }
+video[data-cs-video]:not(.cs-painted), canvas[data-cs-orbit]:not(.cs-painted) { opacity: 0; }
+[data-cs-hint] { transition: opacity .4s ease; }
+[data-cs-hint].cs-hidden { opacity: 0; visibility: hidden; }
+/* Textes calés : cachés seulement quand le moteur tourne. */
+.cs-ready [data-cs-cue] { opacity: 0; visibility: hidden; will-change: opacity, transform; }
+@media (prefers-reduced-motion: reduce) {
+  [data-cs-poster], [data-cs-hint] { transition: none; }
+  video[data-cs-video] { display: none; }
+}

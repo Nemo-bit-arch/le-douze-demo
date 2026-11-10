@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le Douze · Le toit</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="cinescroll.css">
+<link rel="stylesheet" href="vol.css">
+</head>
+<body>
+
+<header class="bandeau">
+  <p class="marque">Le Douze</p>
+  <p class="bandeau__lieu">Libreville · face à l'Atlantique</p>
+</header>
+
+<main>
+  <!-- Le vol : de l'océan au toit, puis au comptoir du salon-bar. Vidéo générée (vol simulé), 26 s.
+       Temps du film : mer 0-0,26 · tables 0,26-0,42 · couple 0,42-0,56 · pergola 0,56-0,705 ·
+       seuil 0,705-0,85 · bar 0,85-1. La courbe ralentit sur le couple et la plage. -->
+  <section class="vol" id="vol" data-cs-scene data-cs-length="720" data-cs-damp="7" aria-labelledby="titre-douze">
+    <div class="vol__scene" data-cs-stage>
+      <img class="vol__affiche" data-cs-poster src="media/vol-debut.webp" data-cs-poster-end="media/vol-fin.webp"
+           alt="Vue aérienne depuis l'océan : la plage, le boulevard bordé de cocotiers et l'immeuble du Douze, son toit-terrasse couvert de parasols écrus.">
+      <video class="vol__film" data-cs-video data-cs-src="media/vol.mp4" data-cs-src-mobile="media/vol-m.mp4"
+             data-cs-curve="0:0, 0.22:0.26, 0.36:0.42, 0.45:0.47, 0.53:0.56, 0.66:0.705, 0.78:0.85, 0.9:0.995, 1:1"
+             muted playsinline preload="none" aria-hidden="true"></video>
+      <div class="vol__voile" aria-hidden="true"></div>
+
+      <div class="vol__ouverture" data-cs-cue="0,0.08">
+        <p class="surtitre">Le Douze · restaurant et lounge · Libreville</p>
+        <p class="ouverture__phrase">Depuis la mer, on le reconnaît à ses parasols.</p>
+        <p class="altimetre" aria-hidden="true"><span class="altimetre__aiguille"></span></p>
+        <p class="ouverture__geste">Faites défiler la page pour rejoindre le toit.</p>
+      </div>
+
+      <p class="vol__legende vol__legende--droite" data-cs-cue="0.07,0.23">Trois étages au-dessus du boulevard, l'Atlantique pour seul voisin.</p>
+      <p class="vol__legende" data-cs-cue="0.22,0.38">Le déjeuner se prend au soleil, sous les parasols de toile.</p>
+      <p class="vol__legende vol__legende--droite" data-cs-cue="0.38,0.54">En contrebas, la plage ; au-delà, l'Atlantique jusqu'à l'horizon.</p>
+      <p class="vol__legende" data-cs-cue="0.6,0.77">Sous la pergola, le salon-bar ouvre ses baies sur la mer.</p>
+
+      <div class="vol__heros" data-cs-cue="0.86,1">
+        <p class="heure-geante" aria-hidden="true">12<span class="heure-geante__h">h</span>30</p>
+        <h1 id="titre-douze" class="heros__titre">Douze heures sur un toit, face à l'océan.</h1>
+        <p class="heros__phrase">Le déjeuner au soleil, le coucher du soleil sur l'Atlantique, puis la nuit au bar. Le Douze vous reçoit chaque jour de midi à minuit, au troisième étage et sur le toit.</p>
+        <a class="ascenseur" href="../#reserver">
+          <span class="ascenseur__plaque" aria-hidden="true">
+            <span class="ascenseur__vis"></span><span class="ascenseur__vis"></span>
+            <span class="ascenseur__bouton"><svg viewBox="0 0 24 24"><path d="M12 6l6 8H6z"/></svg></span>
+            <span class="ascenseur__etage">Toit</span>
+          </span>
+          <span class="ascenseur__txt">Réserver une table</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="suite" id="suite">
+    <p class="surtitre">Le vol du Douze</p>
+    <p class="suite__texte">La plaque de laiton vous conduit à la page du Douze : le coucher du soleil, la table, le bar et la réservation.</p>
+  </section>
+</main>
+
+<script>
+  // Téléphone tenu droit : une version recadrée en hauteur (810 × 1080, toute la définition de la
+  // source), au lieu d'un 16:9 de 720 px agrandi six fois pour remplir l'écran. Tenu à
+  // l'horizontale (ou tablette couchée), le 16:9 léger. Même règle « mobile » que le moteur.
+  (() => {
+    const mobile = matchMedia('(hover: none) and (pointer: coarse)').matches || matchMedia('(max-width: 760px)').matches;
+    if (!mobile) return;
+    const v = document.querySelector('.vol__film');
+    if (matchMedia('(orientation: portrait)').matches) document.documentElement.classList.add('vol-portrait');
+    else v.dataset.csSrcMobile = 'media/vol-m-paysage.mp4';
+  })();
+</script>
+<script src="cinescroll.js"></script>
+<script>
+  // L'en-tête suit la pose du vol (même seuil que le voile crème de vol.css).
+  document.getElementById('vol').addEventListener('cs:progress', e => {
+    const pose = Math.min(1, Math.max(0, (e.detail.p - 0.84) * 7));
+    document.documentElement.style.setProperty('--pose', pose.toFixed(3));
+  });
+</script>
+</body>
+</html>
